@@ -103,7 +103,8 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
         messages.forEach(m => {
             const lines = doc.splitTextToSize(`${m.sender}: ${m.text}`, 180);
             if (y + lines.length * 5 > 280) { doc.addPage(); y=20; }
-            doc.text(lines, 10, y); y += lines.length * 5 + 2;
+            doc.text(lines, 10, y);
+            y += lines.length * 5 + 2;
         });
 
         const fname = `Reporte_${patientData.name}_${new Date().toISOString().slice(0,10)}.pdf`;
@@ -117,6 +118,16 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
             setTimeout(() => setPdfStatus('idle'), 3000);
         }
     }, 100);
+  };
+
+  const getUserInitials = (role: RoleType) => {
+    switch (role) {
+      case 'MEDICO': return 'M';
+      case 'ENFERMERO': return 'E';
+      case 'PARAMEDICO': return 'PM';
+      case 'PRIMER_RESPONDIENTE': return 'PR';
+      default: return 'U';
+    }
   };
 
   return (
@@ -136,7 +147,12 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
           </div>
           <div className="flex-grow min-w-0">
             <h1 className="font-black text-slate-800 uppercase text-sm truncate pr-2">{patientData.name} ({patientData.age}A)</h1>
-            <span className="text-[10px] font-bold text-slate-500 uppercase">{caseDateRef.current.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} • <span className="text-red-600">{userRole}</span></span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase">{caseDateRef.current.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            <div className="flex gap-2 text-[10px] font-bold uppercase text-slate-500">
+                <span>{caseDateRef.current.toLocaleDateString()}</span>
+                <span>•</span>
+                <span className="text-red-600">{userRole.replace('_', ' ')}</span>
+            </div>
           </div>
         </div>
       </header>
@@ -152,7 +168,7 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
                 </div>
               ) : (
                 <div className="w-10 h-10 rounded-full bg-white border-2 border-red-500 flex items-center justify-center shrink-0 shadow-sm text-slate-900 font-black text-xs">
-                  {userRole.substring(0,2)}
+                  {getUserInitials(userRole)}
                 </div>
               )}
               <div className={`p-4 rounded-2xl shadow-sm text-sm ${msg.sender === 'user' ? 'bg-slate-800 text-white rounded-tr-none' : 'bg-red-600 text-white rounded-tl-none font-medium'}`}>{msg.text}</div>
