@@ -35,8 +35,8 @@ export const PatientFormScreen: React.FC<PatientFormScreenProps> = ({ isAdmin, o
             <span className="font-extrabold text-lg text-slate-800">SUMA</span>
         </div>
         <div className="flex gap-2">
-            <button onClick={onOpenHistory} className="flex gap-1 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase shadow-sm"><FileText className="w-4"/> VER HISTORIAL</button>
-            {isAdmin && <button onClick={onOpenAdmin} className="flex gap-1 bg-black text-red-500 px-3 py-1.5 rounded-lg text-xs font-bold uppercase shadow-md"><Shield className="w-4"/> ADMON</button>}
+            <button onClick={onOpenHistory} className="flex gap-1 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase"><FileText className="w-4"/> VER HISTORIAL</button>
+            {isAdmin && <button onClick={onOpenAdmin} className="flex gap-1 bg-black text-red-500 px-3 py-1.5 rounded-lg text-xs font-bold uppercase"><Shield className="w-4"/> ADMON</button>}
             <button onClick={onLogout} className="flex gap-1 text-slate-600 font-bold text-xs items-center uppercase"><LogOut className="w-4"/> SALIR</button>
         </div>
       </header>
