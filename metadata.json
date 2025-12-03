@@ -1,0 +1,8 @@
+{
+  "name": "Proyecto 2 actulal. 03/12/25 12pm",
+  "description": "SUMA - Asistente Médico Personal",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ]
+}

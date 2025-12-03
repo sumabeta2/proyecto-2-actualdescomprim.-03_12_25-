@@ -1,0 +1,36 @@
+import React, { useState } from 'react';
+import { Eye, EyeOff, Activity } from 'lucide-react';
+
+interface ActivationScreenProps {
+  onActivate: (code: string) => void;
+}
+
+export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }) => {
+  const [code, setCode] = useState('');
+  const [showCode, setShowCode] = useState(false);
+
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    if (value.length <= 6) setCode(value);
+  };
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      <div className="w-full max-w-md flex flex-col items-center z-10 space-y-8">
+        <div className="relative w-40 h-40 flex items-center justify-center animate-heartbeat">
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-red-600 drop-shadow-2xl"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+          <span className="absolute text-white text-6xl font-bold font-sans pb-2">S</span>
+        </div>
+        <h1 className="text-5xl font-extrabold tracking-[0.3em] text-slate-800">SUMA</h1>
+        <div className="w-full space-y-6 pt-4 flex flex-col items-center">
+          <div className="relative group w-full">
+            <input type={showCode ? "text" : "password"} maxLength={6} value={code} onChange={handleCodeChange} className="block w-full pl-10 pr-12 py-4 border-2 border-gray-200 rounded-2xl text-center text-2xl font-bold text-slate-900" placeholder="000000" />
+            <button type="button" onClick={() => setShowCode(!showCode)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400">{showCode ? <EyeOff className="h-6 w-6"/> : <Eye className="h-6 w-6"/>}</button>
+          </div>
+          <button disabled={code.length !== 6} onClick={() => onActivate(code)} className={`w-full py-4 rounded-2xl font-bold text-white ${code.length === 6 ? 'bg-red-600' : 'bg-gray-300'}`}>ACTIVAR</button>
+          <div className="pt-2"><span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">v2.0 FINAL</span></div>
+        </div>
+      </div>
+    </div>
+  );
+};
