@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ActivationScreen } from './components/ActivationScreen';
-import { PatientFormScreen } from './components/PatientFormScreen';
-import { AssistanceScreen } from './components/AssistanceScreen';
-import { SupportScreen } from './components/SupportScreen';
-import { HistoryScreen } from './components/HistoryScreen';
-import { AdminScreen } from './components/AdminScreen';
+// IMPORTACIONES CORREGIDAS PARA TU CARPETA REAL
+import { ActivationScreen } from './componentes/ActivationScreen';
+import { PatientFormScreen } from './componentes/PatientFormScreen';
+import { AssistanceScreen } from './componentes/AssistanceScreen';
+import { SupportScreen } from './componentes/SupportScreen';
+import { HistoryScreen } from './componentes/HistoryScreen';
+import { AdminScreen } from './componentes/AdminScreen';
 import { PatientData, RoleType } from './types';
 
 const ADMIN_CODE = '561393';
