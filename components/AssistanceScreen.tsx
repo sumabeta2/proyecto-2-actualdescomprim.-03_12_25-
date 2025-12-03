@@ -96,11 +96,11 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
         const result = await model.generateContent({
-            contents: [{ role: 'user', parts: [{ text: textToSend }] }],
+            contents: [{ role: 'user', parts: [{ text: inputMessage }] }],
             systemInstruction: systemInstruction
         });
         const response = result.response.text();
-        setMessages(prev => [...prev, { id: Date.now()+1, text: response, sender: 'bot', timestamp: new Date() }]);
+        setMessages(prev => [...prev, { id: Date.now()+1, text: result.response.text(), sender: 'bot', timestamp: new Date() }]);
     } catch(e) { console.error(e); } 
     finally { setIsLoading(false); }
   };
@@ -166,10 +166,8 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
               <span className="absolute text-white text-xs font-bold pb-0.5">S</span>
           </div>
           <div className="flex-grow min-w-0">
-            <div className="flex justify-between items-baseline">
-                <h1 className="font-black text-slate-800 uppercase text-sm truncate pr-2">{patientData.name} ({patientData.age}A)</h1>
-                <span className="text-[10px] font-bold text-slate-400 shrink-0">{caseDateRef.current.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-            </div>
+            <h1 className="font-black text-slate-800 uppercase text-sm truncate pr-2">{patientData.name} ({patientData.age}A)</h1>
+            <span className="text-[10px] font-bold text-slate-400 shrink-0">{caseDateRef.current.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
             <div className="flex gap-2 text-[10px] font-bold uppercase text-slate-500">
                 <span>{caseDateRef.current.toLocaleDateString()}</span>
                 <span>•</span>
@@ -190,7 +188,7 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
                 </div>
               ) : (
                 <div className="w-10 h-10 rounded-full bg-white border-2 border-red-500 flex items-center justify-center shrink-0 shadow-sm text-slate-900 font-black text-xs">
-                  {userRole.substring(0,2)}
+                  {userRole === 'MEDICO' ? 'M' : userRole === 'ENFERMERO' ? 'E' : userRole === 'PARAMEDICO' ? 'PM' : 'PR'}
                 </div>
               )}
               <div className={`p-4 rounded-2xl shadow-sm text-sm ${msg.sender === 'user' ? 'bg-slate-800 text-white rounded-tr-none' : 'bg-red-600 text-white rounded-tl-none font-medium'}`}>
@@ -208,6 +206,14 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
         )}
         <div ref={messagesEndRef} />
       </main>
+
+      {pdfStatus !== 'idle' && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+            <div className={`px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm ${pdfStatus === 'generating' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}>
+                {pdfStatus === 'generating' ? <><Loader2 className="w-4 h-4 animate-spin" />Generando PDF...</> : <><CheckCircle className="w-4 h-4" />Descarga Exitosa</>}
+            </div>
+        </div>
+      )}
 
       <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
         <div className="max-w-3xl mx-auto flex items-center gap-2">
