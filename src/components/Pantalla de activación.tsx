@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Activity } from 'lucide-react';
+import { getDeviceId } from '../utils/device-id';
 
 interface ActivationScreenProps {
   onActivate: (code: string) => void;
@@ -18,6 +19,9 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
 
   const handleActivateClick = () => {
     if (code.length === 6) {
+      // Simulation of binding logic for v2.3
+      // We generate/get the device ID here to ensure it exists before activation
+      getDeviceId(); 
       onActivate(code);
     }
   };
@@ -34,7 +38,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
           {/* The Letter S */}
           <span className="absolute text-white text-6xl font-bold font-sans pb-2 z-20">S</span>
           
-          {/* ECG Line Masked inside the heart */}
+          {/* ECG Line Masked inside the heart - EXACT v2.3 Standard */}
           <div className="absolute inset-0 flex items-center justify-center opacity-90 pointer-events-none overflow-hidden rounded-full mask-heart z-10">
             <svg className="w-full h-16" viewBox="0 0 500 100" preserveAspectRatio="none">
                <path d="M0 50 L200 50 L215 20 L225 80 L235 50 L245 50 L260 20 L275 80 L285 50 L500 50" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="animate-ecg-flow" style={{ strokeDasharray: '500', strokeDashoffset: '500' }} />
@@ -58,7 +62,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
             </button>
           </div>
           <button type="button" disabled={code.length !== 6} onClick={handleActivateClick} className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-lg text-lg font-bold text-white transition-all transform hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 active:scale-[0.98] ${code.length === 6 ? 'bg-red-600 hover:bg-red-700 hover:shadow-red-500/30 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'}`}>ACTIVAR</button>
-          <div className="pt-2"><span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">v2.2</span></div>
+          <div className="pt-2"><span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">v2.3</span></div>
         </div>
       </div>
     </div>
