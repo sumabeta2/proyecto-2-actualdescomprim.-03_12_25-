@@ -63,7 +63,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
             </button>
           </div>
           <button disabled={code.length !== 6} onClick={() => onActivate(code)} className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg ${code.length === 6 ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-300'}`}>ACTIVAR</button>
-          <div className="pt-2"><span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">v2.2</span></div>
+          <div className="pt-2"><span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">v2.2 FINAL</span></div>
         </div>
       </div>
     </div>
