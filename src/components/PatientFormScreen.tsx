@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogOut, HelpCircle, FileText, Shield, User } from 'lucide-react';
+import { LogOut, HelpCircle, FileText, Shield } from 'lucide-react';
 import { RoleType, PatientData } from '../types';
 
 interface PatientFormScreenProps {
@@ -52,11 +52,19 @@ export const PatientFormScreen: React.FC<PatientFormScreenProps> = ({ isAdmin, o
           </div>
           <div className="flex items-center gap-2">
             <button onClick={onOpenHistory} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-600 bg-blue-600 text-white hover:bg-blue-700 text-xs sm:text-sm font-medium transition-colors shadow-sm"><FileText className="w-4 h-4" /><span className="font-bold uppercase">HISTORIAL</span></button>
-            {isAdmin && <button onClick={onOpenAdmin} className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-black border border-black text-red-500 hover:bg-gray-900 text-xs sm:text-sm font-medium shadow-md transition-colors w-24"><span className="font-bold uppercase text-center w-full">ADMON</span></button>}
             <button onClick={onLogout} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 text-xs sm:text-sm font-bold transition-colors uppercase ml-1"><LogOut className="w-4 h-4" /><span className="sr-only sm:not-sr-only">SALIR</span></button>
           </div>
         </div>
       </header>
+      
+      {/* SECTION: ADMIN BUTTON - Only if isAdmin - CENTERED */}
+      {isAdmin && (
+        <div className="bg-white border-b border-slate-200 p-3 flex justify-center w-full">
+            <button onClick={onOpenAdmin} className="bg-black text-red-500 font-black uppercase text-sm px-10 py-3 rounded-lg shadow-lg hover:bg-gray-900 transition-colors flex items-center gap-2 tracking-widest border border-red-500/20">
+                <Shield className="w-5 h-5" /> ADMON
+            </button>
+        </div>
+      )}
       
       <div className="bg-slate-200 py-1 text-center border-b border-slate-300"><span className="text-red-600 font-black text-xs uppercase tracking-[0.2em]">NUEVO CASO</span></div>
       
