@@ -33,7 +33,13 @@ export interface ClinicalCase {
 export interface AccessCode {
   code: string;
   type: '24H' | 'MONTHLY';
-  status: 'ACTIVE' | 'BLOCKED' | 'EXPIRED';
+  // Updated status types for v2.3 logic
+  status: 'ACTIVE' | 'BLOCKED' | 'EXPIRED' | 'AVAILABLE' | 'USED';
   createdAt: string;
   expiresAt: string;
+  // New fields for v2.3 binding logic
+  assignedTo?: string; // Name
+  phoneNumber?: string;
+  deviceId?: string; // IMEI simulation
+  activatedAt?: string;
 }
