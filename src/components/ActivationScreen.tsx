@@ -17,7 +17,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
       <div className="w-full max-w-md flex flex-col items-center z-10 space-y-8">
-        {/* LOGO PORTADA ANIMADO COMPLETO */}
+        {/* LOGO PORTADA CON ECG CENTRADO */}
         <div className="relative w-40 h-40 flex items-center justify-center animate-heartbeat">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-red-600 drop-shadow-2xl">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -25,13 +25,13 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" className="absolute w-full h-full text-blue-600 pointer-events-none scale-105">
              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
-          <span className="absolute text-white text-6xl font-bold font-sans pb-2">S</span>
+          <span className="absolute text-white text-6xl font-bold font-sans pb-2 select-none">S</span>
           
-          {/* ECG ANIMADO */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-90 pointer-events-none overflow-hidden rounded-full w-32 h-12 mx-auto mt-8">
-            <svg className="w-full h-full" viewBox="0 0 500 100" preserveAspectRatio="none">
+          {/* ECG CENTRADO VERTICALMENTE */}
+          <div className="absolute top-1/2 left-0 w-full h-16 -translate-y-1/2 flex items-center justify-center opacity-90 pointer-events-none overflow-hidden rounded-full pt-2">
+            <svg className="w-full h-full scale-125" viewBox="0 0 500 100" preserveAspectRatio="none">
                <path d="M0 50 L40 50 L50 20 L60 80 L70 50 L100 50 L110 50 L120 20 L130 80 L140 50 L180 50 L190 20 L200 80 L210 50 L250 50 L260 20 L270 80 L280 50 L320 50 L330 20 L340 80 L350 50 L500 50" 
-                     fill="none" stroke="#22c55e" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" 
+                     fill="none" stroke="#22c55e" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" 
                      className="animate-ecg-flow" 
                      style={{ strokeDasharray: '500', strokeDashoffset: '500' }} />
             </svg>
@@ -40,8 +40,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
 
         <div className="text-center space-y-2">
           <h1 className="text-5xl font-extrabold tracking-[0.3em] text-slate-800">SUMA</h1>
-          {/* SUBTÍTULO OSCURO */}
-          <p className="text-slate-900 font-black text-sm sm:text-base max-w-xs mx-auto leading-relaxed">Tu Asistente Médico Personal, <br/> Cuando Más Lo Necesitas</p>
+          <p className="text-slate-700 font-bold text-sm sm:text-base max-w-xs mx-auto leading-relaxed">Tu Asistente Médico Personal, <br/> Cuando Más Lo Necesitas</p>
         </div>
 
         <div className="w-full space-y-6 pt-4 flex flex-col items-center">
@@ -49,7 +48,6 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Activity className="h-5 w-5 text-gray-400 group-focus-within:text-red-500 transition-colors" />
             </div>
-            {/* INPUT NEGRO FUERTE */}
             <input 
               type={showCode ? "text" : "password"} 
               maxLength={6} 
@@ -63,7 +61,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
             </button>
           </div>
           <button disabled={code.length !== 6} onClick={() => onActivate(code)} className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg ${code.length === 6 ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-300'}`}>ACTIVAR</button>
-          <div className="pt-2"><span className="text-xs font-semibold text-red-600 bg-red-50 px-4 py-1 rounded-full border border-red-200 shadow-sm">v3.0 EXECUTED</span></div>
+          <div className="pt-2"><span className="text-xs font-semibold text-red-600 bg-red-50 px-4 py-1 rounded-full border border-red-200 shadow-sm">v2.3 FINAL</span></div>
         </div>
       </div>
     </div>
