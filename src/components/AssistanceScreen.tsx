@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Mic, MicOff, MapPin, FileDown, Share2, Loader2, Bot, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Send, Mic, MicOff, MapPin, FileDown, Share2, Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 import { PatientData, RoleType } from '../types';
 import { jsPDF } from "jspdf";
@@ -52,7 +52,6 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
     - Prioriza la vida.
   `;
 
-  // Hook for Live API (Audio)
   const { connect, disconnect, connected, isVolume, setOnMessage } = useLiveAPI({
     model: "models/gemini-2.0-flash-exp",
     systemInstruction: systemInstruction
@@ -61,54 +60,36 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
   useEffect(() => {
     setOnMessage((text, sender, endOfTurn) => {
         if (!text) return;
-        
         setMessages(prev => {
             const lastMsg = prev[prev.length - 1];
             if (lastMsg.sender === sender && (Date.now() - lastMsg.timestamp.getTime() < 5000)) {
-                 const updatedMsg = { ...lastMsg, text: lastMsg.text + text };
-                 return [...prev.slice(0, -1), updatedMsg];
+                 return [...prev.slice(0, -1), { ...lastMsg, text: lastMsg.text + text }];
             }
             return [...prev, { id: Date.now(), text, sender, timestamp: new Date() }];
         });
     });
   }, [setOnMessage]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isVolume]);
+  useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages, isVolume]);
 
-  const toggleMic = () => {
-    if (connected) {
-      disconnect();
-    } else {
-      connect();
-    }
-  };
+  const toggleMic = () => connected ? disconnect() : connect();
 
-  // Handler for TEXT input (Chat)
   const handleSendMessage = async () => {
     if (inputMessage.trim() === '' || isLoading) return;
     const textToSend = inputMessage;
-    
     setMessages(prev => [...prev, { id: Date.now(), text: textToSend, sender: 'user', timestamp: new Date() }]);
     setInputMessage('');
     setIsLoading(true);
 
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        // Updated to use the correct v2 SDK call: ai.models.generateContent
         const result = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: [{ role: 'user', parts: [{ text: textToSend }] }],
             config: { systemInstruction: systemInstruction }
         });
-        
-        const response = result.text || "No se recibió respuesta.";
-        setMessages(prev => [...prev, { id: Date.now()+1, text: response, sender: 'bot', timestamp: new Date() }]);
-    } catch(e) { 
-        console.error(e); 
-        setMessages(prev => [...prev, { id: Date.now()+1, text: "Error de conexión.", sender: 'bot', timestamp: new Date() }]);
-    } 
+        setMessages(prev => [...prev, { id: Date.now()+1, text: result.text || "...", sender: 'bot', timestamp: new Date() }]);
+    } catch(e) { console.error(e); } 
     finally { setIsLoading(false); }
   };
 
@@ -118,9 +99,7 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
         const url = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
         window.open(`https://wa.me/?text=${encodeURIComponent("Ubicación: " + url)}`, '_blank');
       });
-    } else {
-        alert("Geolocalización no activada.");
-    }
+    } else alert("Geolocalización no activada.");
   };
 
   const generatePDF = (share: boolean) => {
@@ -138,15 +117,11 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
             const prefix = m.sender === 'bot' ? 'Dra. Suma: ' : 'Usuario: ';
             const lines = doc.splitTextToSize(prefix + m.text, 180);
             if (y + lines.length * 5 > 280) { doc.addPage(); y=20; }
-            if (m.sender === 'bot') doc.setTextColor(200, 0, 0); else doc.setTextColor(0, 0, 0);
-            doc.text(lines, 10, y);
-            y += lines.length * 5 + 2;
+            doc.setTextColor(m.sender === 'bot' ? 200 : 0, 0, 0);
+            doc.text(lines, 10, y); y += lines.length * 5 + 2;
         });
 
-        const now = new Date();
-        const safeName = patientData.name.replace(/[^a-z0-9]/gi, '_').substring(0, 15);
-        const fname = `Reporte_${safeName}_${now.toISOString().split('T')[0]}_${now.getHours()}-${now.getMinutes()}.pdf`;
-
+        const fname = `Reporte_${patientData.name.replace(/[^a-z0-9]/gi, '_')}.pdf`;
         if (share && navigator.share) {
             const file = new File([doc.output('blob')], fname, {type: 'application/pdf'});
             navigator.share({files: [file]}).catch(console.error);
@@ -163,9 +138,9 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <header className="bg-white shadow-sm sticky top-0 z-20 border-b border-slate-100">
         <div className="max-w-3xl mx-auto px-4 py-2 flex items-center gap-3">
-          <button onClick={onEndSession} className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
-            <ArrowLeft className="w-6 h-6" />
-          </button>
+          <button onClick={onEndSession} className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors"><ArrowLeft className="w-6 h-6" /></button>
+          
+          {/* V2.3 Standard Logo */}
           <div className="relative w-8 h-8 flex items-center justify-center animate-heartbeat-slow shrink-0">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-red-600">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -177,15 +152,11 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
                  </svg>
                </div>
           </div>
+
           <div className="flex-grow min-w-0">
-            <div className="flex justify-between items-baseline">
-                <h1 className="font-black text-slate-800 uppercase text-sm truncate pr-2">{patientData.name} ({patientData.age}A)</h1>
-                <span className="text-[10px] font-bold text-slate-400 shrink-0">{caseDateRef.current.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-            </div>
+            <h1 className="font-black text-slate-800 uppercase text-sm truncate pr-2">{patientData.name} ({patientData.age}A)</h1>
             <div className="flex gap-2 text-[10px] font-bold uppercase text-slate-500">
-                <span>{caseDateRef.current.toLocaleDateString()}</span>
-                <span>•</span>
-                <span className="text-red-600">{userRole.replace('_', ' ')}</span>
+                <span>{caseDateRef.current.toLocaleDateString()}</span><span>•</span><span className="text-red-600">{userRole.replace('_', ' ')}</span>
             </div>
           </div>
         </div>
@@ -196,9 +167,12 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
           <div key={msg.id} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`flex max-w-[90%] gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               {msg.sender === 'bot' ? (
-                <div className="w-10 h-10 flex items-center justify-center shrink-0 relative">
-                   <div className="absolute w-full h-full bg-white rounded-full border border-slate-100 shadow-sm"></div>
-                   <Bot className="w-5 h-5 text-red-600 relative z-10" />
+                // V2.3 Bot Avatar (Matching Logo)
+                <div className="w-10 h-10 flex items-center justify-center shrink-0 relative animate-heartbeat-slow">
+                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-red-600">
+                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                   </svg>
+                   <span className="absolute text-white text-[10px] font-bold pb-0.5 z-20">S</span>
                 </div>
               ) : (
                 <div className="w-10 h-10 rounded-full bg-white border-2 border-red-500 flex items-center justify-center shrink-0 shadow-sm text-slate-900 font-black text-xs">
@@ -211,24 +185,23 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
             </div>
           </div>
         ))}
-        {isVolume && (
-            <div className="flex justify-start w-full animate-pulse">
-                <div className="bg-red-50 text-red-600 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2">
-                    <Loader2 className="w-3 h-3 animate-spin" /> Dra. Suma escuchando/hablando...
-                </div>
-            </div>
-        )}
+        {isVolume && <div className="flex justify-start w-full animate-pulse"><div className="bg-red-50 text-red-600 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Dra. Suma escuchando...</div></div>}
         <div ref={messagesEndRef} />
       </main>
 
+      {/* PDF Success Toast v2.3 */}
+      {pdfStatus !== 'idle' && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+            <div className={`px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm ${pdfStatus === 'generating' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}>
+                {pdfStatus === 'generating' ? <><Loader2 className="w-4 h-4 animate-spin" />Generando PDF...</> : <><CheckCircle className="w-4 h-4" />DESCARGA EXITOSA</>}
+            </div>
+        </div>
+      )}
+
       <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
         <div className="max-w-3xl mx-auto flex items-center gap-2">
-          <button onClick={toggleMic} className={`p-4 rounded-full transition-all border-2 shadow-lg ${connected ? 'bg-red-600 border-red-600 text-white animate-pulse ring-4 ring-red-200' : 'bg-white border-slate-200 text-slate-400 hover:border-red-400 hover:text-red-500'}`}>
-            {connected ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
-          </button>
-          <div className="flex-grow relative">
-            <input value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder={connected ? "Modo Manos Libres Activo..." : "Escribir mensaje..."} disabled={connected} className="w-full pl-4 pr-4 py-3 bg-slate-100 border-0 rounded-xl text-slate-800 focus:ring-2 focus:ring-red-500 transition-all" />
-          </div>
+          <button onClick={toggleMic} className={`p-4 rounded-full transition-all border-2 shadow-lg ${connected ? 'bg-red-600 border-red-600 text-white animate-pulse ring-4 ring-red-200' : 'bg-white border-slate-200 text-slate-400 hover:border-red-400 hover:text-red-500'}`}>{connected ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}</button>
+          <div className="flex-grow relative"><input value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder={connected ? "Modo Manos Libres..." : "Escribir mensaje..."} disabled={connected} className="w-full pl-4 pr-4 py-3 bg-slate-100 border-0 rounded-xl text-slate-800 focus:ring-2 focus:ring-red-500 transition-all" /></div>
           {!connected && <button onClick={() => handleSendMessage()} className="p-3 rounded-xl bg-slate-800 text-white shadow-lg"><Send className="w-6 h-6" /></button>}
         </div>
       </div>
