@@ -41,7 +41,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
         <div className="text-center space-y-2">
           <h1 className="text-5xl font-extrabold tracking-[0.3em] text-slate-800">SUMA</h1>
           {/* SUBTÍTULO OSCURO */}
-          <p className="text-slate-700 font-bold text-sm sm:text-base max-w-xs mx-auto leading-relaxed">Tu Asistente Médico Personal, <br/> Cuando Más Lo Necesitas</p>
+          <p className="text-slate-900 font-black text-sm sm:text-base max-w-xs mx-auto leading-relaxed">Tu Asistente Médico Personal, <br/> Cuando Más Lo Necesitas</p>
         </div>
 
         <div className="w-full space-y-6 pt-4 flex flex-col items-center">
@@ -55,7 +55,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
               maxLength={6} 
               value={code} 
               onChange={handleCodeChange} 
-              className="block w-full pl-10 pr-12 py-4 border-2 border-gray-200 rounded-2xl leading-5 bg-white text-black placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 sm:text-2xl text-xl tracking-[0.5em] text-center font-black transition-all shadow-sm" 
+              className="block w-full pl-10 pr-12 py-4 border-2 border-gray-200 rounded-2xl leading-5 bg-white text-black placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/10 sm:text-3xl text-2xl tracking-[0.5em] text-center font-black transition-all shadow-sm" 
               placeholder="000000" 
             />
             <button type="button" onClick={() => setShowCode(!showCode)} className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-gray-400 hover:text-gray-600 transition-colors">
@@ -63,7 +63,7 @@ export const ActivationScreen: React.FC<ActivationScreenProps> = ({ onActivate }
             </button>
           </div>
           <button disabled={code.length !== 6} onClick={() => onActivate(code)} className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg ${code.length === 6 ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-300'}`}>ACTIVAR</button>
-          <div className="pt-2"><span className="text-xs font-semibold text-red-500 bg-red-50 px-3 py-1 rounded-full border border-red-100">v2.2 FINAL</span></div>
+          <div className="pt-2"><span className="text-xs font-semibold text-red-600 bg-red-50 px-4 py-1 rounded-full border border-red-200 shadow-sm">v3.0 EXECUTED</span></div>
         </div>
       </div>
     </div>
