@@ -24,7 +24,6 @@ body {
     animation: heartbeat-slow 2s ease-in-out infinite;
   }
   
-  /* ANIMACIÓN CONTINUA DE IZQUIERDA A DERECHA */
   @keyframes ecg-flow {
     0% { stroke-dashoffset: 500; }
     100% { stroke-dashoffset: 0; }
