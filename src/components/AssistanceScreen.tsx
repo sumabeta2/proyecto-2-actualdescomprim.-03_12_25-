@@ -138,9 +138,9 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
           <div className="relative w-10 h-10 flex items-center justify-center animate-heartbeat-slow shrink-0">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-red-600"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="absolute w-full h-full text-blue-600 scale-105"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
-              <span className="absolute text-white text-lg font-bold pb-0.5">S</span>
-              <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none overflow-hidden rounded-full w-8 h-4 mx-auto mt-1">
-                <svg className="w-full h-4" viewBox="0 0 500 100" preserveAspectRatio="none">
+              <span className="absolute text-white text-lg font-bold pb-0.5 select-none">S</span>
+              <div className="absolute top-1/2 left-0 w-full h-full -translate-y-1/2 flex items-center justify-center opacity-80 pointer-events-none overflow-hidden rounded-full pt-1.5">
+                <svg className="w-full h-4 scale-125" viewBox="0 0 500 100" preserveAspectRatio="none">
                    <path d="M0 50 L40 50 L50 20 L60 80 L70 50 L100 50 L110 50 L120 20 L130 80 L140 50 L180 50 L190 20 L200 80 L210 50 L250 50 L260 20 L270 80 L280 50 L320 50 L330 20 L340 80 L350 50 L500 50" fill="none" stroke="#22c55e" strokeWidth="20" className="animate-ecg-flow" style={{ strokeDasharray: '500', strokeDashoffset: '500' }} />
                 </svg>
               </div>
@@ -156,10 +156,14 @@ export const AssistanceScreen: React.FC<AssistanceScreenProps> = ({ onEndSession
         {messages.map((msg) => (
           <div key={msg.id} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`flex max-w-[90%] gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              {/* LOGO BOT CENTRADO */}
               {msg.sender === 'bot' ? (
                 <div className="w-10 h-10 flex items-center justify-center shrink-0 relative">
                    <div className="absolute w-full h-full bg-white rounded-full border border-slate-100 shadow-sm"></div>
-                   <Bot className="w-5 h-5 text-red-600 relative z-10" />
+                   <div className="relative w-6 h-6 flex items-center justify-center z-10">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-red-600"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+                      <span className="absolute text-white text-[6px] font-bold pb-0.5">S</span>
+                   </div>
                 </div>
               ) : (
                 <div className="w-10 h-10 rounded-full bg-white border-2 border-red-500 flex items-center justify-center shrink-0 shadow-sm text-slate-900 font-black text-xs">
