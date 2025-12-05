@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ActivationScreen } from './components/ActivationScreen';
-import { PatientFormScreen } from './components/PatientFormScreen';
-import { AssistanceScreen } from './components/AssistanceScreen';
-import { SupportScreen } from './components/SupportScreen';
-import { HistoryScreen } from './components/HistoryScreen';
-import { AdminScreen } from './components/AdminScreen';
+// RUTA CORREGIDA: Sube un nivel para encontrar las carpetas en la raíz
+import { ActivationScreen } from '../components/ActivationScreen';
+import { PatientFormScreen } from '../components/PatientFormScreen';
+import { AssistanceScreen } from '../components/AssistanceScreen';
+import { SupportScreen } from '../components/SupportScreen';
+import { HistoryScreen } from '../components/HistoryScreen';
+import { AdminScreen } from '../components/AdminScreen';
 import { PatientData, RoleType, AccessCode } from './types';
-import { generateInitialCodes } from './utils/code-generator';
+// RUTA Y NOMBRE CORREGIDOS: Sube un nivel y usa el nombre en español
+import { generateInitialCodes } from '../utils/generador-de-código';
 
 const ADMIN_CODE = '561393';
 const IDLE_TIMEOUT = 5 * 60 * 1000; // 5 minutes
@@ -17,20 +19,17 @@ const App: React.FC = () => {
   const [patientData, setPatientData] = useState<PatientData | null>(null);
   const [userRole, setUserRole] = useState<RoleType>('PRIMER_RESPONDIENTE');
   
-  // v2.4 Global Code State
   const [accessCodes, setAccessCodes] = useState<AccessCode[]>(() => {
-    const saved = localStorage.getItem('suma_codes_v2_4');
+    const saved = localStorage.getItem('suma_codes_v2_5');
     return saved ? JSON.parse(saved) : generateInitialCodes();
   });
 
   const [activeSessionCode, setActiveSessionCode] = useState<AccessCode | null>(null);
 
-  // Persist codes on change
   useEffect(() => {
-    localStorage.setItem('suma_codes_v2_4', JSON.stringify(accessCodes));
+    localStorage.setItem('suma_codes_v2_5', JSON.stringify(accessCodes));
   }, [accessCodes]);
 
-  // v2.4 Auto Logout Logic
   useEffect(() => {
     let timeout: number;
     const resetTimer = () => {
@@ -47,7 +46,7 @@ const App: React.FC = () => {
     window.addEventListener('keypress', resetTimer);
     window.addEventListener('click', resetTimer);
     
-    resetTimer(); // Start
+    resetTimer();
     
     return () => {
       window.removeEventListener('mousemove', resetTimer);
@@ -64,6 +63,12 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDeleteCode = (codeToDelete: string) => {
+    if (window.confirm(`¿Seguro que quieres eliminar el código ${codeToDelete}? Esta acción es irreversible.`)) {
+      setAccessCodes(prev => prev.filter(c => c.code !== codeToDelete));
+    }
+  };
+
   const handleActivation = (codeOrAccess: string | AccessCode) => {
     if (typeof codeOrAccess === 'string') {
         if (codeOrAccess === ADMIN_CODE) {
@@ -71,7 +76,6 @@ const App: React.FC = () => {
             setCurrentScreen('PATIENT_FORM');
         }
     } else {
-        // It's a valid AccessCode object from ActivationScreen
         setIsAdmin(false);
         setActiveSessionCode(codeOrAccess);
         setCurrentScreen('PATIENT_FORM');
@@ -136,6 +140,7 @@ const App: React.FC = () => {
             onBack={() => setCurrentScreen('PATIENT_FORM')} 
             codes={accessCodes}
             onUpdateCode={handleUpdateCode}
+            onDeleteCode={handleDeleteCode}
         />
       )}
     </div>
